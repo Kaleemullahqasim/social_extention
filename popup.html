@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <input type="text" id="urlInput" placeholder="Enter URL...">
+    <button id="addUrl">Add URL</button>
+    <ul id="urlList"></ul>
+    <script>
+    // When the page loads, get the current list of URLs.
+    window.onload = function() {
+        chrome.runtime.sendMessage({ cmd: 'getUrls' }, function(response) {
+            for (let url of response.urls) {
+                addUrlToList(url);
+            }
+        });
+    }
+
+    // When the user clicks the Add URL button, add the inputted URL to the list.
+    document.getElementById('addUrl').onclick = function() {
+        let url = document.getElementById('urlInput').value;
+        if (url) {
+            chrome.runtime.sendMessage({ cmd: 'addUrl', url });
+            addUrlToList(url);
+        }
+    }
+
+    // Helper function to add a URL to the UI list.
+    function addUrlToList(url) {
+        let li = document.createElement('li');
+        li.textContent = url;
+        document.getElementById('urlList').appendChild(li);
+    }
+    </script>
+</body>
+</html>
